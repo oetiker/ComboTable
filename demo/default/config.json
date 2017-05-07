@@ -34,7 +34,7 @@
   "let" :
   {
     "APPLICATION"  : "combotable.demo",
-    "QOOXDOO_PATH" : "../../../../qooxdoo/1.4",
+    "QOOXDOO_PATH" : "/usr/pack/qooxdoo-5.0.1-za/qooxdoo-5.0.1-sdk/",
     "QXTHEME"      : "qx.theme.Modern",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*"],
     "LOCALES"      : [ "en" ],

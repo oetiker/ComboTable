@@ -217,7 +217,7 @@ qx.Class.define("combotable.ComboTable", {
                 showCellFocusIndicator        : false,
                 headerCellsVisible            : false,
                 columnVisibilityButtonVisible : false,
-                focusCellOnMouseMove          : true
+                focusCellOnPointerMove          : true
             });
 
             var tcm = table.getTableColumnModel();

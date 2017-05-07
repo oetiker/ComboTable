@@ -22,7 +22,7 @@
     ],
 
     "version" : "trunk",
-    "qooxdoo-versions": ["1.4"]
+    "qooxdoo-versions": ["4.x - 5.x"]
   },
   
   "provides" : 
