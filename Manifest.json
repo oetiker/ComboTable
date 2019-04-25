@@ -3,10 +3,10 @@
   {
     "name" : "ComboTable",
 
-    "summary" : "A selectbox with incemental search",
-    "description" : "A selectbox using a qooxdoo table to show list of options supporting incremental search.",
+    "summary" : "A qooxdoo SelectBox with incremental search",
+    "description" : "A SelectBox using a qooxdoo table to show a list of options supporting incremental search.",
     
-    "homepage" : "http://contrib.qooxdoo.org/project/ComboTable",
+    "homepage" : "http://github.com/oetiker/ComboTable",
 
     "license" : "LGPL/EPL",
     "authors" : 
@@ -21,8 +21,8 @@
       }
     ],
 
-    "version" : "trunk",
-    "qooxdoo-versions": ["4.x - 5.x"]
+    "version" : "0.9.0",
+    "qooxdoo-range": "6.0.0-alpha - 6.x"
   },
   
   "provides" : 
