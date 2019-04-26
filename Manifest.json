@@ -1,15 +1,15 @@
 {
-  "info" : 
+  "info" :
   {
     "name" : "ComboTable",
 
     "summary" : "A qooxdoo SelectBox with incremental search",
     "description" : "A SelectBox using a qooxdoo table to show a list of options supporting incremental search.",
-    
+
     "homepage" : "http://github.com/oetiker/ComboTable",
 
     "license" : "LGPL/EPL",
-    "authors" : 
+    "authors" :
     [
       {
         "name" : "Tobi Oetiker (oetiker)",
@@ -17,9 +17,9 @@
       }
     ],
 
-    "version" : "0.10.0"
-  },  
-  "provides" : 
+    "version" : "1.0.1"
+  },
+  "provides" :
   {
     "namespace"   : "combotable",
     "encoding"    : "utf-8",
@@ -32,4 +32,3 @@
     "qooxdoo-sdk": "^6.0.0-alpha"
   }
 }
-
