@@ -1,0 +1,3 @@
+#: combotable/ComboTable.js:181 combotable/ComboTable.js:179
+msgid "Filtering ..."
+msgstr ""

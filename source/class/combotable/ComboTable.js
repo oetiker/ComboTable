@@ -5,9 +5,7 @@
      Mustafa Sak, SAK systems, www.saksys.de
 
    License:
-     LGPL: http://www.gnu.org/licenses/lgpl.html
-     EPL: http://www.eclipse.org/org/documents/epl-v10.php
-     See the LICENSE file in the project's top-level directory for details.
+     MIT
 
    Authors:
      * Tobias Oetiker (oetiker)
@@ -44,7 +42,7 @@ qx.Class.define("combotable.ComboTable", {
         if (!tableModel.setSearchString) {
             throw new Error("tableModel must have a setSearchString method. Create your own model or use combotable.SearchableModel!");
         }
-        if (!tableModel.getColumns().length != 2) {
+        if (tableModel.getColumnCount() != 2) {
             throw new Error("tableModel must have exactly two columns!");
         }
 

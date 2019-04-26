@@ -13,9 +13,9 @@ qx.Class.define("combotable.demo.Application",
   members :
   {
     /**
-     * This method contains the initial application code and gets called 
+     * This method contains the initial application code and gets called
      * during startup of the application
-     * 
+     *
      * @lint ignoreDeprecated(alert)
      */
     main : function()
@@ -27,7 +27,7 @@ qx.Class.define("combotable.demo.Application",
         qx.log.appender.Console;
       }
 
-      var doc = this.getRoot();			
+      var doc = this.getRoot();
 
       var model1 = new combotable.SearchableModel();
       model1.setColumns(['Id','Data'],['id','data']);
@@ -43,8 +43,7 @@ qx.Class.define("combotable.demo.Application",
           model: '32'
       });
       doc.add(button1, {left: 100, top: 50});
-//    button1.setModel(1);
-//    button1.setValue("Hello World");
+
       var button2 = new combotable.ComboTable(model2).set({
           placeholder: 'pick one of 5 million',
           width: 200

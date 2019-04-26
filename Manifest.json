@@ -17,9 +17,8 @@
       }
     ],
 
-    "version" : "0.10.0",
-  },
-  
+    "version" : "0.10.0"
+  },  
   "provides" : 
   {
     "namespace"   : "combotable",
@@ -28,6 +27,9 @@
     "resource"    : "source/resource",
     "translation" : "source/translation",
     "type"        : "contribution"
+  },
+  "requires": {
+    "qooxdoo-sdk": "^6.0.0-alpha"
   }
 }
 
