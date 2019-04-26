@@ -3,20 +3,21 @@
    Copyright:
      Tobias Oetiker, OETIKER+PARTNER AG, www.oetiker.ch
      Mustafa Sak, SAK systems, www.saksys.de
-     
+
    License:
      LGPL: http://www.gnu.org/licenses/lgpl.html
      EPL: http://www.eclipse.org/org/documents/epl-v10.php
      See the LICENSE file in the project's top-level directory for details.
 
-   Authors:   
+   Authors:
      * Tobias Oetiker (oetiker)
      * Mustafa Sak
+     * Fritz Zaucker (fritz.zaucker@oetiker.ch)
 
 ************************************************************************ */
 
 /**
- * If a traditional selectbox covers lots of options, it becomes pretty upractical
+ * If a traditional SelectBox contains lots of items, it becomes pretty unpractical
  * to navigate. This widget lets the user enter part of the item of interest and
  * filters the drop down box accordingly.
  * It uses single column {@link qx.ui.table.Table} to present the dropdown box.
@@ -24,10 +25,10 @@
  * may want to try the included {@link combotable.SearchableModel}.
  * Combined with {@link qx.ui.table.model.Remote} it is possible to
  * provide access to huge datasets.
- * The model in use must provide two columns. The first column containing
- * the id/key of the row and the second column the searchable data.
- * 
- * @throws {Error} An error if the table model does not proved a {setSearchString} method.
+ * The model passed into the constructor must already have two columns set.
+ * The first column containing the id/key of the row and the second column the searchable data.
+ *
+ * @throws {Error} An error if the table model does not provide a {setSearchString} method or has not two columns.
  */
 qx.Class.define("combotable.ComboTable", {
     extend : qx.ui.form.ComboBox,
@@ -43,6 +44,9 @@ qx.Class.define("combotable.ComboTable", {
         if (!tableModel.setSearchString) {
             throw new Error("tableModel must have a setSearchString method. Create your own model or use combotable.SearchableModel!");
         }
+        if (!tableModel.getColumns().length != 2) {
+            throw new Error("tableModel must have exactly two columns!");
+        }
 
         this.__tableModel = tableModel;
 
@@ -56,10 +60,10 @@ qx.Class.define("combotable.ComboTable", {
         /**
          * Is the content of the table presently being reloaded ?
          */
-        loading : {
+        comboLoading : {
             init  : false,
             check : "Boolean",
-            apply : "_applyLoading"
+            apply : "_applyComboLoading"
         }
     },
 
@@ -74,10 +78,10 @@ qx.Class.define("combotable.ComboTable", {
          * As the popup data is recalculated adjust the selection and if the popup is already closed set
          * the field content.
          *
-         * @return {void} 
+         * @return {void}
          */
         _onTableDataChanged : function() {
-            this.setLoading(false);
+            this.setComboLoading(false);
             var tm = this.__tableModel;
             var table = this.__table;
             var rc = tm.getRowCount();
@@ -116,9 +120,9 @@ qx.Class.define("combotable.ComboTable", {
          *
          * @param value {var} new value
          * @param old {var} old value
-         * @return {void} 
+         * @return {void}
          */
-        _applyLoading : function(value, old) {
+        _applyComboLoading : function(value, old) {
             this.__table.setVisibility(value ? 'hidden' : 'visible');
             qx.ui.core.queue.Visibility.flush();
             qx.html.Element.flush();
@@ -208,7 +212,7 @@ qx.Class.define("combotable.ComboTable", {
                 });
             };
 
-            armClick();        
+            armClick();
             textfield.addListener('focusout',armClick,this);
 
             table.getDataRowRenderer().setHighlightFocusRow(true);
@@ -258,7 +262,7 @@ qx.Class.define("combotable.ComboTable", {
             {
                 case "Down":
                 case "Up":
-                    if (this.getLoading()) {
+                    if (this.getComboLoading()) {
                         e.stop();
                         e.stopPropagation();
                         return;
@@ -275,7 +279,7 @@ qx.Class.define("combotable.ComboTable", {
                 case "Enter":
                 case "Escape":
                 case "Tab":
-                     if (this.getLoading()) {
+                     if (this.getComboLoading()) {
                          e.stop();
                          e.stopPropagation();
                          return;
@@ -290,142 +294,142 @@ qx.Class.define("combotable.ComboTable", {
         },
 
 
-                    /**
-                     * Scroll down one row
-                     *
-                     * @return {void} 
-                     */
-                    rowDown : function() {
-                        var row = this.getSelectedRowData();
-                        var table = this.__table;
+        /**
+         * Scroll down one row
+         *
+         * @return {void}
+         */
+        rowDown : function() {
+            var row = this.getSelectedRowData();
+            var table = this.__table;
 
-                        if (!row) {
-                            table.setFocusedCell(1, 0, true);
-                            table.getSelectionModel().setSelectionInterval(0, 0);
+            if (!row) {
+                table.setFocusedCell(1, 0, true);
+                table.getSelectionModel().setSelectionInterval(0, 0);
+            }
+            else {
+                if (row.rowId + 1 < this.__tableModel.getRowCount()) {
+                    table.setFocusedCell(1, row.rowId + 1, true);
+                    table.getSelectionModel().setSelectionInterval(row.rowId + 1, row.rowId + 1);
+                }
+            }
+        },
+
+
+        /**
+         * Scroll up one row
+         *
+         * @return {void}
+         */
+        rowUp : function() {
+            var row = this.getSelectedRowData();
+            var table = this.__table;
+
+            if (!row) {
+                table.setFocusedCell(1, 0, true);
+                table.getSelectionModel().setSelectionInterval(0, 0);
+            }
+            else {
+                if (row.rowId - 1 >= 0) {
+                    table.setFocusedCell(1, row.rowId - 1, true);
+                    table.getSelectionModel().setSelectionInterval(row.rowId - 1, row.rowId - 1);
+                }
+            }
+        },
+
+
+        // overridden
+        _onListChangeSelection : function(e) {},
+
+
+        // overridden
+        _onPopupChangeVisibility : function(e) {
+            var visibility = e.getData();
+
+            if (visibility == 'hidden') {
+                this.getChildControl("button").removeState("selected");
+                var row = this.getSelectedRowData();
+
+                if (row) {
+                    this.setModel(row.key);
+                    this.setValue(row.value);
+                }
+                else {
+                    if (this.getValue()){
+                        this.setModel(null);
+                        this.setValid(false);
+                    }
+                    else {
+                        if (this.getRequired()){
+                            this.setValid(false);
                         }
-                        else {
-                            if (row.rowId + 1 < this.__tableModel.getRowCount()) {
-                                table.setFocusedCell(1, row.rowId + 1, true);
-                                table.getSelectionModel().setSelectionInterval(row.rowId + 1, row.rowId + 1);
-                            }
-                        }
-                    },
-
-
-                    /**
-                     * Scroll up one row
-                     *
-                     * @return {void} 
-                     */
-                    rowUp : function() {
-                        var row = this.getSelectedRowData();
-                        var table = this.__table;
-
-                        if (!row) {
-                            table.setFocusedCell(1, 0, true);
-                            table.getSelectionModel().setSelectionInterval(0, 0);
-                        }
-                        else {
-                            if (row.rowId - 1 >= 0) {
-                                table.setFocusedCell(1, row.rowId - 1, true);
-                                table.getSelectionModel().setSelectionInterval(row.rowId - 1, row.rowId - 1);
-                            }
-                        }
-                    },
-
-
-                    // overridden
-                    _onListChangeSelection : function(e) {},
-
-
-                    // overridden
-                    _onPopupChangeVisibility : function(e) {
-                        var visibility = e.getData();
-
-                        if (visibility == 'hidden') {
-                            this.getChildControl("button").removeState("selected");
-                            var row = this.getSelectedRowData();
-
-                            if (row) {
-                                this.setModel(row.key);
-                                this.setValue(row.value);
-                            }
-                            else {
-                                if (this.getValue()){
-                                    this.setModel(null);
-                                    this.setValid(false);
-                                }
-                                else {
-                                    if (this.getRequired()){
-                                        this.setValid(false);
-                                    }
-                                }
-                            }
-                        }
-                        else {
-                            this.getChildControl("button").addState("selected");
-                        }
-                    },
-
-
-                    // overridden
-                    _onTextFieldInput : function(e) {
-                        var value = e.getData();
-                        var table = this.__table;
-                        this.open();
-                        var sm = table.getSelectionModel();
-                        sm.resetSelection();
-                        table.setFocusedCell(null, null, false);
-
-                        if (this.__updateTimer) {
-                            this.__timerMgr.stop(this.__updateTimer);
-                        }
-
-                        this.__updateTimer = this.__timerMgr.start(function(userData, timerId) {
-                            this.__updateTimer = null;
-
-                            if (this.__tableModel.getSearchString() != value) {
-                                this.setLoading(true);
-                                this.__highlighter.setSearchString(value);
-                                this.__tableModel.setSearchString(value);
-                            }
-                        },
-                        null, this, null, 150);
-
-                        this.fireDataEvent("input", value, e.getOldData());
-                    },
-
-
-                    // overridden
-                    _onTextFieldChangeValue : function(e) {
-                        this.fireDataEvent("changeValue", e.getData(), e.getOldData());
-                    },
-
-
-                    /**
-                     * get id and data curently selected
-                     *
-                     * @return {var} map with id and data and rowId keys
-                     */
-                    getSelectedRowData : function() {
-                        var table = this.__table;
-                        var sel = table.getSelectionModel().getSelectedRanges();
-                        var tm = this.__tableModel;
-                        for (var i=0; i<sel.length; i++) {
-                            var interval = sel[i];
-
-                            for (var s=interval.minIndex; s<=interval.maxIndex; s++) {
-                                var key = tm.getValue(0, s);
-                                var value = tm.getValue(1, s);
-
-                                return {
-                                    rowId : s,
-                                    key   : key,
-                                    value : value
-                                };
-                            }
-                        }
-                        return null;
                     }
                 }
-            });
+            }
+            else {
+                this.getChildControl("button").addState("selected");
+            }
+        },
+
+
+        // overridden
+        _onTextFieldInput : function(e) {
+            var value = e.getData();
+            var table = this.__table;
+            this.open();
+            var sm = table.getSelectionModel();
+            sm.resetSelection();
+            table.setFocusedCell(null, null, false);
+
+            if (this.__updateTimer) {
+                this.__timerMgr.stop(this.__updateTimer);
+            }
+
+            this.__updateTimer = this.__timerMgr.start(function(userData, timerId) {
+                this.__updateTimer = null;
+
+                if (this.__tableModel.getSearchString() != value) {
+                    this.setComboLoading(true);
+                    this.__highlighter.setSearchString(value);
+                    this.__tableModel.setSearchString(value);
+                }
+            },
+            null, this, null, 150);
+
+            this.fireDataEvent("input", value, e.getOldData());
+        },
+
+
+        // overridden
+        _onTextFieldChangeValue : function(e) {
+            this.fireDataEvent("changeValue", e.getData(), e.getOldData());
+        },
+
+
+        /**
+         * get id and data curently selected
+         *
+         * @return {var} map with id and data and rowId keys
+         */
+        getSelectedRowData : function() {
+            var table = this.__table;
+            var sel = table.getSelectionModel().getSelectedRanges();
+            var tm = this.__tableModel;
+            for (var i=0; i<sel.length; i++) {
+                var interval = sel[i];
+
+                for (var s=interval.minIndex; s<=interval.maxIndex; s++) {
+                    var key = tm.getValue(0, s);
+                    var value = tm.getValue(1, s);
+
+                    return {
+                        rowId : s,
+                        key   : key,
+                        value : value
+                    };
+                }
+            }
+            return null;
+        }
+    }
+});
