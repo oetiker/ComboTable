@@ -1,34 +1,28 @@
 {
-  "info" :
-  {
-    "name" : "ComboTable",
-
-    "summary" : "A qooxdoo SelectBox with incremental search",
-    "description" : "A SelectBox using a qooxdoo table to show a list of options supporting incremental search.",
-
-    "homepage" : "http://github.com/oetiker/ComboTable",
-
-    "license" : "LGPL/EPL",
-    "authors" :
-    [
+  "info": {
+    "name": "ComboTable",
+    "summary": "A qooxdoo SelectBox with incremental search",
+    "description": "A SelectBox using a qooxdoo table to show a list of options supporting incremental search.",
+    "homepage": "http://github.com/oetiker/ComboTable",
+    "license": "LGPL/EPL",
+    "authors": [
       {
-        "name" : "Tobi Oetiker (oetiker)",
-        "email" : "tobi@oetiker.ch"
+        "name": "Tobi Oetiker (oetiker)",
+        "email": "tobi@oetiker.ch"
       }
     ],
-
-    "version" : "1.0.1"
+    "version": "1.0.2"
   },
-  "provides" :
-  {
-    "namespace"   : "combotable",
-    "encoding"    : "utf-8",
-    "class"       : "source/class",
-    "resource"    : "source/resource",
-    "translation" : "source/translation",
-    "type"        : "contribution"
+  "provides": {
+    "namespace": "combotable",
+    "encoding": "utf-8",
+    "class": "source/class",
+    "resource": "source/resource",
+    "translation": "source/translation"
   },
   "requires": {
-    "qooxdoo-sdk": "^6.0.0-alpha"
-  }
+    "@qooxdoo/compiler": "^1.0.0-beta.20200507-1713",
+    "@qooxdoo/framework": "^6.0.0-beta-20200418-1852"
+  },
+  "$schema": "https://raw.githubusercontent.com/qooxdoo/qooxdoo-compiler/master/source/resource/qx/tool/schema/Manifest-1-0-0.json"
 }
